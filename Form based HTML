@@ -1,0 +1,933 @@
+<script type="text/javascript">
+    if ($.fn.datepicker) {
+        $('.datepicker').each(function () {
+
+            var $this = $(this),
+                dataDateFormat = $this.attr('data-dateformat') || 'dd.mm.yy';
+
+            $this.datepicker({
+                dateFormat: dataDateFormat,
+                prevText: '<i class="fa fa-chevron-left"></i>',
+                nextText: '<i class="fa fa-chevron-right"></i>',
+                todayBtn: 'linked'
+            });
+
+            // clear memory reference
+            $this = null;
+        });
+    }
+
+    $(document).ready(function () {
+        AskepForm.showCombo($("select[name=nama_perawat1]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat2]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat3]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat4]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat5]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat6]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat7]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat8]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat9]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_perawat10]"), "nurse");
+        AskepForm.showCombo($("select[name=nama_dokter1]"), "doctor");
+        AskepForm.showCombo($("select[name=nama_dokter2]"), "doctor");
+        AskepForm.showCombo($("select[name=nama_dokter3]"), "doctor");
+        AskepForm.showCombo($("select[name=nama_dokter4]"), "doctor");
+        AskepForm.showCombo($("select[name=nama_dokter5]"), "doctor");
+        AskepForm.showCombo($("select[name=nama_dokter6]"), "doctor");
+        AskepForm.showCombo($("select[name=nama_dokter7]"), "doctor");
+        AskepForm.showCombo($("select[name=nama_dokter8]"), "doctor");
+    });
+
+    $(document).ready(function () {
+        NextPage(1);
+
+        showText(1, $('input[name=riwayat_alergi]'));
+        showText(2, $('input[name=riwayat_kesehatan_lalu]'));
+        showText(3, $('input[name=kesadaran_fisik]'));
+        showText(4, $('input[name=alat_bantu]'));
+        showText(5, $('input[name=hasil_lab_new]'));
+        showText(6, $('input[name=hasil_rad_new]'));
+        showText(7, $('input[name=nilai_keyakinan]'));
+        showText(8, $('input[name=keterbatasan_fisik]'));
+        showText(9, $('input[id=masalah_keperawatan_lain]'));
+        showText(10, $('input[id=perencanaan_asuhan_ranap]'));
+        showText(11, $('input[id=perencanaan_asuhan_odc]'));
+        showText(12, $('input[name=perencanaan_asuhan_odc_opsi]'));
+        showText(13, $('input[id=perencanaan_asuhan_lab]'));
+        showText(14, $('input[name=perencanaan_asuhan_lab_opsi]'));
+        showText(15, $('input[id=perencanaan_asuhan_rad]'));
+        showText(16, $('input[name=perencanaan_asuhan_rad_opsi]'));
+        showText(17, $('input[id=perencanaan_asuhan_fisio]'));
+        showText(18, $('input[name=perencanaan_asuhan_fisio_opsi]'));
+        showText(19, $('input[id=perencanaan_asuhan_endos]'));
+        showText(20, $('input[name=perencanaan_asuhan_endos_opsi]'));
+        showText(21, $('input[id=perencanaan_asuhan_konsul]'));
+        showText(22, $('input[name=perencanaan_asuhan_konsul_opsi]'));
+        showText(23, $('input[id=perencanaan_asuhan_cath]'));
+        showText(24, $('input[name=perencanaan_asuhan_cath_opsi]'));
+        showText(25, $('input[name=kebutuhan_komunikasi]'));
+        showText(26, $('input[name=penerjemah]'));
+        showText(27, $('input[id=hambatan_belajar_lain]'));
+        showText(28, $('input[id=pembelajaran_lain]'));
+        showText(29, $('input[name=penyebab_timbul_paksa]'));
+        showText(30, $('input[name=bagaimana_rasa]'));
+        showText(31, $('input[name=terjadi_nyeri]'));
+        showText(32, $('input[name=agama_lain_txt]'));
+
+        $(document).off('click', '#SelectAllergy').on('click', '#SelectAllergy', function () {
+            var idx = $(this).attr('data-index');
+
+            $("#myModal").modal({
+                remote: _PATH + '/modules/patient/?cmd=apiGetTpl&filename=patient_allergy_form_select&from=document&regpid={REGPID}'
+            });
+        });
+
+        $(document).off('click', '#inputAlergi').on('click', '#inputAlergi', function () {
+            insertToPatientAlergi($('textarea[id=riwayat_alergi_ya_txt]'), true);
+        });
+    });
+
+    function NextPage(idx) {
+        $('li[id^=li_page]').removeClass('active');
+        $('#li_page_' + idx).addClass('active');
+        $('fieldset[id^=dokumen_page]').addClass('hidden');
+        $('#dokumen_page_' + idx).removeClass('hidden');
+    }
+
+    function showText(idx, obj) {
+        if (idx == 1) {
+            if (obj.value == 't') {
+                $('#show_txt').show();
+                $('#show_txt2').show();
+                $('#SelectAllergy').show();
+            }
+            else {
+                $('#show_txt').hide();
+                $('#show_txt2').hide();
+                $('#SelectAllergy').hide();
+            }
+        }
+
+        if (idx == 2) {
+            if (obj.value == 'lainnya')
+                $('#riwayat_kesehatan_lalu_lain_txt').show();
+            else
+                $('#riwayat_kesehatan_lalu_lain_txt').hide();
+        }
+
+        if (idx == 3) {
+            if (obj.value == 'lainnya')
+                $('#kesadaran_fisik_lain_txt').show();
+            else
+                $('#kesadaran_fisik_lain_txt').hide();
+        }
+
+        if (idx == 4) {
+            if (obj.value == 'lainnya')
+                $('#alat_bantu_lain_txt').show();
+            else
+                $('#alat_bantu_lain_txt').hide();
+        }
+
+        if (idx == 5) {
+            if (obj.value == 't') {
+                $('#tgl_hasil_lab_new').show();
+                $('#icon_tgl_lab').show();
+            }
+            else {
+                $('#tgl_hasil_lab_new').hide();
+                $('#icon_tgl_lab').hide();
+            }
+        }
+
+        if (idx == 6) {
+            if (obj.value == 't') {
+                $('#tgl_hasil_rad_new').show();
+                $('#icon_tgl_rad').show();
+            }
+            else {
+                $('#tgl_hasil_rad_new').hide();
+                $('#icon_tgl_rad').hide();
+            }
+        }
+
+        if (idx == 7) {
+            if (obj.value == 'lain_lain')
+                $('#nilai_keyakinan_lain_txt').show();
+            else
+                $('#nilai_keyakinan_lain_txt').hide();
+        }
+
+
+        if (idx == 8) {
+            if (obj.value == 't')
+                $('#keterbatasan_fisik_ya_txt').show();
+            else
+                $('#keterbatasan_fisik_ya_txt').hide();
+        }
+
+        if (idx == 9) {
+            if (obj.checked == true)
+                $('#masalah_keperawatan_lain_txt').show();
+            else
+                $('#masalah_keperawatan_lain_txt').hide();
+        }
+
+        if (idx == 10) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_ranap_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_ranap_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_ranap_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_ranap_opsi]').addClass('hidden');
+            }
+        }
+
+        if (idx == 11) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_odc_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_odc_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_odc_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_odc_opsi]').addClass('hidden');
+            }
+
+            $('input[name=perencanaan_asuhan_odc_opsi]').prop('checked', false);
+            showText(12, $('input[name=perencanaan_asuhan_odc_opsi]'));
+        }
+
+        if (idx == 12) {
+            if (obj.value == 'lain_lain')
+                $('#perencanaan_asuhan_odc_opsi_lain_txt').show();
+            else
+                $('#perencanaan_asuhan_odc_opsi_lain_txt').hide();
+        }
+
+        if (idx == 13) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_lab_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_lab_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_lab_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_lab_opsi]').addClass('hidden');
+            }
+
+            $('input[name=perencanaan_asuhan_lab_opsi]').prop('checked', false);
+            showText(14, $('input[name=perencanaan_asuhan_lab_opsi]'));
+        }
+
+        if (idx == 14) {
+            if (obj.value == 't')
+                $('#perencanaan_asuhan_lab_opsi_ya_txt').show();
+            else
+                $('#perencanaan_asuhan_lab_opsi_ya_txt').hide();
+        }
+
+        if (idx == 15) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_rad_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_rad_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_rad_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_rad_opsi]').addClass('hidden');
+            }
+
+            $('input[name=perencanaan_asuhan_rad_opsi]').prop('checked', false);
+            showText(16, $('input[name=perencanaan_asuhan_rad_opsi]'));
+        }
+
+        if (idx == 16) {
+            if (obj.value == 't')
+                $('#perencanaan_asuhan_rad_opsi_ya_txt').show();
+            else
+                $('#perencanaan_asuhan_rad_opsi_ya_txt').hide();
+        }
+
+        if (idx == 17) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_fisio_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_fisio_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_fisio_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_fisio_opsi]').addClass('hidden');
+            }
+
+            $('input[name=perencanaan_asuhan_fisio_opsi]').prop('checked', false);
+            showText(18, $('input[name=perencanaan_asuhan_fisio_opsi]'));
+        }
+
+        if (idx == 18) {
+            if (obj.value == 't')
+                $('#perencanaan_asuhan_fisio_opsi_ya_txt').show();
+            else
+                $('#perencanaan_asuhan_fisio_opsi_ya_txt').hide();
+        }
+
+        if (idx == 19) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_endos_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_endos_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_endos_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_endos_opsi]').addClass('hidden');
+            }
+
+            $('input[name=perencanaan_asuhan_endos_opsi]').prop('checked', false);
+            showText(20, $('input[name=perencanaan_asuhan_endos_opsi]'));
+        }
+
+        if (idx == 20) {
+            if (obj.value == 't')
+                $('#perencanaan_asuhan_endos_opsi_ya_txt').show();
+            else
+                $('#perencanaan_asuhan_endos_opsi_ya_txt').hide();
+        }
+
+        if (idx == 21) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_konsul_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_konsul_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_konsul_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_konsul_opsi]').addClass('hidden');
+            }
+
+            $('input[name=perencanaan_asuhan_konsul_opsi]').prop('checked', false);
+            showText(22, $('input[name=perencanaan_asuhan_konsul_opsi]'));
+        }
+
+        if (idx == 22) {
+            if (obj.value == 't')
+                $('#perencanaan_asuhan_konsul_opsi_ya_txt').show();
+            else
+                $('#perencanaan_asuhan_konsul_opsi_ya_txt').hide();
+        }
+
+        if (idx == 23) {
+            if (obj.checked == true) {
+                $('label[id^=perencanaan_asuhan_cath_opsi]').removeClass('hidden');
+                $('label[id^=perencanaan_asuhan_cath_opsi]').addClass('radio');
+            }
+            else {
+                $('label[id^=perencanaan_asuhan_cath_opsi]').removeClass('radio');
+                $('label[id^=perencanaan_asuhan_cath_opsi]').addClass('hidden');
+            }
+
+            $('input[name=perencanaan_asuhan_cath_opsi]').prop('checked', false);
+            showText(24, $('input[name=perencanaan_asuhan_cath_opsi]'));
+        }
+
+        if (idx == 24) {
+            if (obj.value == 't')
+                $('#perencanaan_asuhan_cath_opsi_ya_txt').show();
+            else
+                $('#perencanaan_asuhan_cath_opsi_ya_txt').hide();
+        }
+
+        if (idx == 25) {
+            $('label[id^=bahasa_indo]').removeClass('radio');
+            $('label[id^=bahasa_indo]').addClass('hidden');
+
+            if (obj.value == 'indo') {
+                $('label[id^=bahasa_indo]').removeClass('hidden');
+                $('label[id^=bahasa_indo]').addClass('radio');
+            }
+
+            $('label[id^=bahasa_inggris]').removeClass('radio');
+            $('label[id^=bahasa_inggris]').addClass('hidden');
+
+            if (obj.value == 'inggris') {
+                $('label[id^=bahasa_inggris]').removeClass('hidden');
+                $('label[id^=bahasa_inggris]').addClass('radio');
+            }
+
+            $('label[id^=bahasa_isyarat]').removeClass('radio');
+            $('label[id^=bahasa_isyarat]').addClass('hidden');
+
+            if (obj.value == 'isyarat') {
+                $('label[id^=bahasa_isyarat]').removeClass('hidden');
+                $('label[id^=bahasa_isyarat]').addClass('radio');
+            }
+
+            $('#daerah_txt').hide();
+
+            if (obj.value == 'daerah')
+                $('#daerah_txt').show();
+
+            $('#lain_lain_txt').hide();
+
+            if (obj.value == 'lain_lain')
+                $('#lain_lain_txt').show();
+        }
+
+        if (idx == 26) {
+            if (obj.value == 't')
+                $('#penerjemah_txt').show();
+            else
+                $('#penerjemah_txt').hide();
+        }
+
+        if (idx == 27) {
+            if (obj.checked == true)
+                $('#hambatan_belajar_txt').show();
+            else
+                $('#hambatan_belajar_txt').hide();
+        }
+
+        if (idx == 28) {
+            if (obj.checked == true)
+                $('#pembelajaran_lain_txt').show();
+            else
+                $('#pembelajaran_lain_txt').hide();
+        }
+
+        if (idx == 29) {
+            if (obj.value == 'lain_lain')
+                $('#penyebab_timbul_paksa_lain_txt').show();
+            else
+                $('#penyebab_timbul_paksa_lain_txt').hide();
+        }
+
+        if (idx == 30) {
+            if (obj.value == 'lain_lain')
+                $('#bagaimana_rasa_lain_txt').show();
+            else
+                $('#bagaimana_rasa_lain_txt').hide();
+        }
+
+        if (idx == 31) {
+            if (obj.value == 'lain_lain')
+                $('#terjadi_nyeri_lain_txt').show();
+            else
+                $('#terjadi_nyeri_lain_txt').hide();
+        }
+
+        if (idx == 32) {
+            if (obj.value == 'lainnya')
+                $('#agama_lain_txt').show();
+            else
+                $('#agama_lain_txt').hide();
+        }
+    }
+
+    $(document).off('click', '#SelectTTV').on('click', '#SelectTTV', function () {
+        $("#myModal").modal({
+            remote: _PATH + '/modules/patient/?cmd=apiGetTpl&filename=patient_vital_sign_form&from=new_dokumen&regpid={REGPID}'
+        });
+    });
+
+    $(document).off('click', '#inputTtv').on('click', '#inputTtv', function () {
+        insertToPatientVitalSigns($('input[id=tekanan_darah]'), true);
+    });
+
+    function setTTV(bp, pr, rr, temperature, bmi, weight, height) {
+        $('input[id=tekanan_darah]').val(bp);
+        $('input[id=tinggi_badan]').val(height);
+        $('input[id=nadi]').val(pr);
+        $('input[id=pernafasan]').val(rr);
+        $('input[id=berat_badan]').val(weight);
+        $('input[id=suhu]').val(temperature);
+    }
+
+    function SetSkor(idx, obj) {
+        var nilai = obj.value;
+
+        $('#hasil_pertanyaan_lbl_' + idx).html(nilai);
+        $('#hasil_pertanyaan_txt_' + idx).val(nilai);
+
+        HitungSkor();
+    }
+
+    function HitungSkor() {
+        var total_skor = 0;
+
+        $('input[name^=hasil_pertanyaan_txt]').each(function () {
+            var skor = isNaN(parseInt($(this).val())) ? 0 : parseFloat($(this).val());
+
+            total_skor = parseInt(total_skor) + parseInt(skor);
+        });
+
+        $('#total_skor_lbl').html('<b>' + total_skor + '</b>');
+        $('#total_skor_txt').val(total_skor);
+    }
+
+    function AddValue(val) {
+        $('#skor_nyeri_txt').val(val);
+    }
+
+    function insertAllergytoDoc(allergy) {
+        var allergy_old = $.trim($('textarea[id=riwayat_alergi_ya_txt]').val()),
+            lineEnter = '';
+
+        if (allergy_old != '') lineEnter = "\n";
+
+        if (!allergy_old.includes(allergy))
+            $('textarea[id=riwayat_alergi_ya_txt]').val(allergy_old + lineEnter + allergy);
+        else {
+            $.bigBox({
+                title: "Alergi",
+                content: "Sudah ada Alergi yang sama di list",
+                color: "#E43C3A",
+                icon: "fa fa-warning shake animated",
+                timeout: 3000
+            });
+
+            return false;
+        }
+    }
+</script>
+
+<style type="text/css">
+    fieldset {
+        border-top: none !important;
+    }
+
+    table:not(.with_border) tr td {
+        border-top: none !important;
+    }
+
+    table.with_border tbody td {
+        border-left-width: 1 !important;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    .tengah {
+        vertical-align: middle !important;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .tebal {
+        font-weight: bold;
+        color: black;
+    }
+
+    .ln16 {
+        line-height: 1.7em !important;
+    }
+
+    .bawah {
+        vertical-align: bottom !important;
+    }
+
+    .no_border {
+        border: none !important;
+    }
+
+    .txt,
+    .txt-pendek,
+    .txt-sajo {
+        border: 0px !important;
+        border-bottom: 1px dotted !important;
+    }
+
+    .txt {
+        width: 95%;
+    }
+
+    .txt-pendek {
+        width: 30%;
+    }
+
+    .upper {
+        text-transform: uppercase;
+    }
+
+    .table-new tr,
+    .table-new tr td,
+    .table-new tr td section {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        border: 0px !important;
+    }
+
+    th.rotate,
+    td.rotate {
+        height: 0px;
+        white-space: nowrap;
+        position: relative;
+        letter-spacing: 5px;
+        font-size: 1.4em;
+    }
+
+    th.rotate>div,
+    td.rotate>div {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 10px;
+        margin: 5px;
+        ;
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        /* Safari/Chrome */
+        -moz-transform: rotate(90deg);
+        /* Firefox */
+        -o-transform: rotate(90deg);
+        /* Opera */
+        -ms-transform: rotate(90deg);
+        /* IE 9 */
+
+    }
+
+    /*datatable horizontal style*/
+    .dtHorizontalExampleWrapper {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    #dtHorizontalExample th,
+    td {
+        white-space: nowrap;
+    }
+
+    .bordered {
+        border: 1px solid #ddd !important
+    }
+
+    .txt-fl-right {
+        float: right;
+    }
+
+    .txt-fl-left {
+        float: left;
+    }
+
+    .mr-5 {
+        margin-right: 5px;
+    }
+
+    .mr-10 {
+        margin-right: 10px;
+    }
+
+    .mr-15 {
+        margin-right: 15px;
+    }
+
+    .mr-20 {
+        margin-right: 20px;
+    }
+
+    .ml-5 {
+        margin-left: 5px;
+    }
+
+    .ml-10 {
+        margin-left: 10px;
+    }
+
+    .ml-15 {
+        margin-left: 15px;
+    }
+
+    .ml-20 {
+        margin-left: 20px;
+    }
+
+    .wd-5 {
+        width: 5px;
+    }
+
+    .wd-10 {
+        width: 10px;
+    }
+
+    .wd-15 {
+        width: 15px;
+    }
+
+    .wd-20 {
+        width: 20px;
+    }
+
+    .hg-5 {
+        height: 5px;
+    }
+
+    .hg-10 {
+        height: 10px;
+    }
+
+    .hg-15 {
+        height: 15px;
+    }
+
+    .hg-20 {
+        height: 20px
+    }
+
+    .hg-25 {
+        height: 25px
+    }
+
+    .hg-30 {
+        height: 30px
+    }
+
+    .hg-35 {
+        height: 35px
+    }
+
+    .hg-40 {
+        height: 40px
+    }
+
+    .hg-45 {
+        height: 45px
+    }
+
+    .hg-50 {
+        height: 50px
+    }
+
+    .txt-bold {
+        font-weight: bold;
+    }
+
+    .txt-chkbox {
+        font-size: 12px;
+        margin-right: 10px;
+    }
+
+    .table-bordered-child th,
+    .table-bordered-child td {
+        border: 1px solid #ddd !important
+    }
+
+    .table_ws,
+    td {
+        white-space: normal;
+    }
+
+    .td-mcb label {
+        vertical-align: middle;
+        text-align: center;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .f-8 {
+        font-size: 8px;
+    }
+
+    .f-10 {
+        font-size: 10px;
+    }
+
+    .f-12 {
+        font-size: 12px;
+    }
+
+    .padd-tb-3 {
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+
+    .padd-tb-5 {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    /* tabel inner */
+
+    .tabel_inner {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .tabel_inner h1 {
+        font-size: 1.4em;
+        margin: 5px 0;
+        margin-bottom: 10px;
+        letter-spacing: 0.1em
+    }
+</style>
+
+            <!-- Jika Ada Input TTD, Tambahkan Attribut data-ttd="yes" pada form -->
+            <form class="smart-form" data-ttd="yes">
+                <fieldset id="dokumen_page_1">
+                    <section>
+                        <table class="table table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <td class="tengah upper" style="width: 25%" rowspan="7" colspan="2">
+                                        <table width="100%">
+                                            <tr>
+                                                <td>
+                                                    <span class="tengah upper" style="width: 50%">
+                                                        <img src="../../../../../logonewfarmasiiii.jpg"
+                                                            style="height: 70px" />
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <label style="margin-left: 20px; font-size: 12px">Rumah
+                                                        Sakit</label><br />
+                                                    <label style="margin-left: 20px; font-size: 20px"><b>HUMANA
+                                                            PRIMA</b></label><br />
+                                                    <label style="
+                                            margin-left: 20px;
+                                            font-family: Courier New;
+                                            font-size: 8px;
+                                          ">Jl. Rancabolang No.21 Bandung 40286 <br />
+                                                        Telp. (022) 7563701, 7563543</label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td class="tengah upper" style="width: 35%" rowspan="7">
+                                        <label class="label text-center align-middle"
+                                            style="font-weight: bold; font-size: 1.2em">
+                                            CATATAN PERKEMBANGAN PASIEN TERINTEGRASI <br> (CPPT) <br>
+                                            <p style="font-size: 10px;">
+                                                (Dokter, Perawat dan Tenaga Kesehatan Profesional Lainnya) <br> (Dokter : Menggunakan Pulpen Warna Hitam) <br>
+                                                (Perawat dan Tenaga Kesehatan Profesional lainnya Menggunakan Pulpen Warna Biru)
+                                            </p>
+                                        </label>
+                                        <div class="form-group row">
+                                            <div class="col col-12">
+                                                Ruang / Kelas : <input type="text" style="width: 10%;" name="ruang_kelas" id="ruang_kelas"> 
+                                                <span class="txt-fl-right mr-5">Halaman Ke : <input type="text"></span>
+                                            </div>
+                                        </div>
+                                    </td> 
+                                    <td class="tengah" style="width: 45%; padding-top: 3px; padding-bottom: 3px; font-size: 14px;"
+                                        colspan="3">
+                                        <div class="form-group row">
+                                            <div class="col col-sm-4">
+                                                <label class="label hg-15">No RM
+                                                    <span class="txt-fl-right mr-5">:</span></label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <input myid="check_cara" type="text" name="pasien_norm" id="pasien_norm"
+                                                    class="txt" value="{pid}" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tengah" colspan="3" style="padding-top: 3px; padding-bottom: 3px">
+                                        <div class="form-group row">
+                                            <div class="col col-sm-4">
+                                                <label class="label hg-15">No NIK
+                                                    <span class="txt-fl-right mr-5">:</span></label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <input myid="check_cara" type="text" name="NIK" id="NIK"
+                                                    class="txt" value="{NIK}" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tengah" colspan="3" style="padding-top: 3px; padding-bottom: 3px">
+                                        <div class="form-group row">
+                                            <div class="col col-sm-4">
+                                                <label class="label hg-15">Nama Pasien
+                                                    <span class="txt-fl-right mr-5">:</span></label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <input myid="check_cara" type="text" name="pasien_nama" id="pasien_nama"
+                                                    class="txt" value="{VNO_RM}" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tengah" colspan="3" style="padding-top: 3px; padding-bottom: 3px">
+                                        <div class="form-group row">
+                                            <div class="col col-sm-4">
+                                                <label class="label hg-15">Tgl Lahir <span
+                                                        class="txt-fl-right mr-5">:</span></label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <input myid="check_cara" type="text" name="tanggal_lahir" id="tanggal_lahir"
+                                                    class="txt" value="{TTL}" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tengah" colspan="3" style="padding-top: 3px; padding-bottom: 3px">
+                                        <div class="form-group row">
+                                            <div class="col col-sm-4">
+                                                <label class="label hg-15">Jenis kelamin
+                                                    <span class="txt-fl-right mr-5">:</span></label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <input myid="check_cara" type="radio" name="jenis_kelamin" id="jenis_kelamin
+                                                    class="radio" value="{radio}" />Laki-laki
+                                                <input myid="check_cara" type="radio" name="jenis_kelamin" id="jenis_kelamin
+                                                    class="radio" value="{radio" />Perempuan
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <tr>
+                                        <td class="tengah" colspan="3" style="padding-top: 3px; padding-bottom: 3px">
+                                            <div class="form-group row">
+                                                <div class="col col-sm-12">
+                                                    <label class="label hg-15" style="text-align: center;"><i>(Wajib diisi / Tempelkan Stiker Pasien)</i>
+                                                </div>
+                                </tr>
+                            </thead>
+    <div>
+        <tdalign="center">
+                  </tdalign="center"><table class="table" width="100%" border="1px">
+          <tbody>
+                <tr>
+                  <td style="padding:10px ; text-align:center ; vertical-align:middle ; border-top:1px solid black ; font-size:20px ; background-color:" colspan="5"> 
+                  <b>CATATAN PERKEMBANGAN PASIEN TERINTEGRASI</b> </td>
+                </tr>
+                <tr height="100px">
+                  <td width="1%" align="center"><b>Tanggal &amp; Jam</b></td>
+                  <td width="12%" align="center"><b> Profesional Pemberi Asuhan (PPA)</b></td>
+                  <td width="40%" align="center"><b>HASIL PEMERIKSAAN ANALISIS, RENCANA 
+                    PENATALAKSANAAN PASIEN</b><br>
+                    (Dituliskan dengan format SOAP / ADIME, Disertai dengan sasaran yang
+                    terukur, evaluasi hasil tatalaksana, dituliskan dalam asesmen)</td>
+                  <td width="27%" align="center"><b>INTRUKSI PPA
+                    TERMASUK PASCA BEDAH/ PROSEDUR</b><br>(Dtulis dengan rinci dan jelas, Bubuhkan nama am paraf pada 
+                    pada setiap akhir catatan)</td>
+                  <td width="20%" align="center"><b>REVIEW & VERIFIKASI DPJP/ DPJP UTAMA</b><br>(DPJP harus membaca / mereview 
+                    seluruh rencana perawatan
+                    <b>Bubuhkan Nama & Paraf</b>)
+                    </td>
+                </tr>
+  
+                <tr>
+                <td align="center"><textarea type="textarea" name="1" id="1" myid="check_cara" style="border-color: currentcolor currentcolor rgb(51, 51, 51); border-style: none none dotted; border-width: 0px; border-image: none 100% / 1 / 0 stretch; padding-top: 0px; margin-top: 0px; width: 100px; height: 600px; text-align:left;" rows="1"></textarea></td>
+                  <td align="center"><textarea type="textarea" name="2" id="1" myid="check_cara" style="border-color: currentcolor currentcolor rgb(51, 51, 51); border-style: none none dotted; border-width: 0px; border-image: none 100% / 1 / 0 stretch; padding-top: 0px; margin-top: 0px; width: 300px; height: 600px; text-align:left;" rows="1"></textarea></td>
+                  <td align="center"><textarea type="textarea" name="3" id="1" myid="check_cara" style="border-color: currentcolor currentcolor rgb(51, 51, 51); border-style: none none dotted; border-width: 0px; border-image: none 100% / 1 / 0 stretch; padding-top: 0px; margin-top: 0px; width:300px; height: 600px; text-align:left;" rows="1"></textarea></td>
+                  <td align="center"><textarea type="textarea" name="4" id="1" myid="check_cara" style="border-color: currentcolor currentcolor rgb(51, 51, 51); border-style: none none dotted; border-width: 0px; border-image: none 100% / 1 / 0 stretch; padding-top: 0px; margin-top: 0px; width: 300px; height: 600px; text-align:left;" rows="1"></textarea></td>
+                  <td align="center"><textarea type="textarea" name="5" id="1" myid="check_cara" style="border-color: currentcolor currentcolor rgb(51, 51, 51); border-style: none none dotted; border-width: 0px; border-image: none 100% / 1 / 0 stretch; padding-top: 0px; margin-top: 0px; width: 130px; height: 600px; text-align:left;" rows="1"></textarea></td>
+                </tr>
+  
+  
+  
+  
+                
+          </tbody>
+        </table>
+       
+          
+      
+  
+  </div>
+</body>
+</html>
